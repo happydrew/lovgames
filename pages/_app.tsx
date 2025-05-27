@@ -59,23 +59,24 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
         {/* clickadilla */}
         {/* <script async src="https://js.wpadmngr.com/static/adManager.js" data-admpid="314085"></script> */}
 
+
       </Head>
 
       {/* Google Adsense script */}
       <Script strategy='lazyOnload' async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4907197973761221" crossOrigin="anonymous"></Script>
 
       {/* monetag */}
-      {/* <Script>
+      <Script>
         {`
-        (function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('groleegni.net',9230773,document.createElement('script'))
+        (function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('groleegni.net',9385951,document.createElement('script'))
         `}
       </Script>
 
       <Script>
         {`
-        (function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('gizokraijaw.net',9230778,document.createElement('script'))
+        (function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('gizokraijaw.net',9385961,document.createElement('script'))
         `}
-      </Script> */}
+      </Script>
 
       {/* adsterra banner */}
       <Script strategy='lazyOnload' type="text/javascript">
