@@ -105,17 +105,17 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
       </Script>
       <Script strategy='lazyOnload' type="text/javascript" src="//www.highperformanceformat.com/5d8681ea81dce92641d324ff2850aa08/invoke.js"></Script>
 
-      {/* Google tag (gtag.js)  */}
-      {/* <Script async src="https://www.googletagmanager.com/gtag/js?id=G-QZMXB2WGM2"></Script>
+      {/* Google tag (gtag.js) */}
+      <Script async src="https://www.googletagmanager.com/gtag/js?id=G-L7QSKDQVJB"></Script>
       <Script>
         {`
         window.dataLayer = window.dataLayer || [];
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
-        gtag('config', 'G-QZMXB2WGM2');
-      `}
-      </Script> */}
+        gtag('config', 'G-L7QSKDQVJB');
+        `}
+      </Script>
 
       <Component {...pageProps} />
 
