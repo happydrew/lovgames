@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  font-feature-settings:
+    'rlig' 1,
+    'calt' 1;
+  /* background-color: rgb(0, 0, 0);
+  background-image: url("/background.webp"); */
+  @apply bg-zinc-900 font-body;
+}
+
+h1 {
+  @apply text-3xl font-header text-sky-500 font-semibold;
+}
+
+h2 {
+  @apply text-2xl font-header font-medium text-purple-500;
+}
+
+h3 {
+  @apply text-xl font-header font-normal text-amber-500;
+}
+
+h4, h5, h6 {
+  @apply text-lg font-header !font-normal text-gray-300;
+}
+
+p, li {
+  @apply text-gray-400 text-base leading-relaxed tracking-wide font-body text-[1.1rem];
+}
+
+p strong, li strong {
+  @apply text-gray-300;
+}
+
+figcaption {
+  font-size: 0.85rem;
+  line-height: 1.5rem;
+  display: block;
+  text-align: center;
+  margin-top: 0.5rem;
+}
+
+code.text-\[\.9em\] {
+  font-size: 14px;
+}
+
+.tag {
+  @apply hover:text-white hover:border-transparent hover:bg-primary;
+  @apply text-sm border border-current rounded px-2.5 py-1 font-bold transition-colors;
+}
+
+.text-large {
+  font-size: var(--nextui-font-size-large);
+  line-height: var(--nextui-line-height-large);
+}
+
+.text-stroke-yellow {
+  --webkit-text-stroke: 2px #eab308;
+  /* 黄色描边 */
+  color: white;
+  /* 白色填充 */
+}
