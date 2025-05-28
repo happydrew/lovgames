@@ -55,7 +55,7 @@ const GamePage = ({
 
                     <div id="right-side" className="h-full w-full lg:w-1/5 flex flex-row flex-wrap justify-center items-center gap-2">
                         {relate_games && relate_games.slice(0, 10).map(game => (
-                            <GameCard name={game.name} href={game.href} image={game.image} width={120} height={120} />
+                            <GameCard name={game.name} href={game.href} image={game.image} className="w-[104px] h-[104px] lg:w-[120px] lg:h-[120px]" />
                         ))}
                     </div>
 
@@ -88,7 +88,7 @@ const GamePage = ({
                     <p className="text-2xl font-header font-semibold text-sky-500">Recommended Games</p>
                     <div className="w-full flex flex-wrap justify-center items-center gap-2 px-0 py-2">
                         {relate_games && relate_games.length > 10 && relate_games.slice(10).map(game => (
-                            <GameCard name={game.name} href={game.href} image={game.image} width={120} height={120} />
+                            <GameCard name={game.name} href={game.href} image={game.image} className="w-[104px] h-[104px] lg:w-[120px] lg:h-[120px]" />
                         ))}
                     </div>
 

@@ -19,15 +19,12 @@ const GameCategory: React.FC<GameCategoryProps> = ({ title, games }) => {
             <h2 className='text-2xl font-bold mb-4 pb-2'>{title}</h2>
             <div className='flex flex-wrap justify-start items-center gap-2'>
                 {games.map(game => (
-                    <div className='m-2'>
-                        <GameCard
-                            name={game.name}
-                            href={game.href}
-                            image={game.image}
-                            width={150}
-                            height={150}
-                        />
-                    </div>
+                    <GameCard
+                        name={game.name}
+                        href={game.href}
+                        image={game.image}
+                        className='w-[120px] h-[120px] lg:w-[150px] lg:h-[150px]'
+                    />
                 ))}
                 {games.length === 0 && <p>No games in this category yet.</p>}
             </div>

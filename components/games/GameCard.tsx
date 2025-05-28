@@ -2,23 +2,19 @@ const GameCard = ({
     name,
     href,
     image,
-    width = 104,
-    height = 104
+    className = ''
 }: {
     name: string,
     href: string,
     image: string,
-    width?: number,
-    height?: number
+    className?: string
 }) => {
     return (
         <a
             href={href}
-            className="inline-block relative bg-center bg-cover rounded-lg transform transition duration-150 hover:scale-110 group"
+            className={`inline-block relative bg-center bg-cover rounded-lg transform transition duration-150 hover:scale-110 group ${className}`}
             style={{
-                backgroundImage: `url(${image})`,
-                width: `${width}px`,
-                height: `${height}px`
+                backgroundImage: `url(${image})`
             }}
         >
             <div className="absolute flex justify-center opacity-0 group-hover:opacity-100 items-center w-full bottom-0 bg-gradient-to-t rounded-lg to-transparent">
