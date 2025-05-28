@@ -30,8 +30,8 @@ const GameArea: React.FC<GameInfo> = ({
     // 1. 在组件挂载时，监听全屏切换
     useEffect(() => {
         const onFsChange = async () => {
-            if (document.fullscreenElement) {
-                if (isMobile() && screen.orientation &&
+            if (document.fullscreenElement && isMobile()) {
+                if (screen.orientation &&
                     typeof (screen.orientation as any).lock === 'function') {
                     try {
                         await (screen.orientation as any).lock('portrait-primary');
@@ -41,6 +41,7 @@ const GameArea: React.FC<GameInfo> = ({
                     }
                 } else {
                     console.warn('屏幕方向API screen.orientation.lock 不可用或不存在');
+                    alert('Please rotate your device to portrait mode');
                 }
             } else {
                 if (isMobile() && screen.orientation &&
