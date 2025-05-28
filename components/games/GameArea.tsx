@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Star, Fullscreen, VolumeX, Volume2 } from 'lucide-react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { Star, Fullscreen, VolumeX, Volume2, Minimize2 } from 'lucide-react';
 import { GameInfo } from '@lib/types';
 
 const GameArea: React.FC<GameInfo> = ({
@@ -15,13 +15,24 @@ const GameArea: React.FC<GameInfo> = ({
     const [gameStarted, setGameStarted] = useState(false);
     const [showFullscreenHint, setShowFullscreenHint] = useState(false);
     const fullScreenButtonRef = useRef<HTMLButtonElement>(null);
+    const [isFullscreenActive, setIsFullscreenActive] = useState(false);
+    const fullscreenContainerRef = useRef<HTMLDivElement>(null);
+
+    const isMobile = useCallback((): boolean => {
+        if (typeof window === 'undefined') return false;
+        const matchMediaCheck = window.matchMedia('(max-width: 767px)').matches;
+        const userAgentCheck = /android|iphone|ipad|ipod|windows phone/i.test(
+            navigator.userAgent || ''
+        );
+        return matchMediaCheck || userAgentCheck;
+    }, []);
 
     useEffect(() => {
         let timer: NodeJS.Timeout;
         if (showFullscreenHint) {
             timer = setTimeout(() => {
                 setShowFullscreenHint(false);
-            }, 15000); // Hide after 5 seconds
+            }, 15000);
         }
         return () => {
             if (timer) {
@@ -31,21 +42,18 @@ const GameArea: React.FC<GameInfo> = ({
     }, [showFullscreenHint]);
 
     const handleFullscreen = async () => {
-        if (gameIframeRef.current) {
-            if (document.fullscreenElement) {
-                await document.exitFullscreen();
-                // Consider unlocking orientation if needed when exiting fullscreen on mobile
-
-            } else {
-                // Entering fullscreen
-                await gameIframeRef.current.requestFullscreen();
-            }
+        const container = fullscreenContainerRef.current;
+        if (document.fullscreenElement) {
+            await document.exitFullscreen();
+        } else if (container) {
+            await container.requestFullscreen();
         }
     };
 
-    // 1. 在组件挂载时，监听全屏切换
     useEffect(() => {
         const onFsChange = async () => {
+            setIsFullscreenActive(!!document.fullscreenElement);
+
             if (document.fullscreenElement && isMobile()) {
                 if (screen.orientation &&
                     typeof (screen.orientation as any).lock === 'function') {
@@ -72,11 +80,10 @@ const GameArea: React.FC<GameInfo> = ({
         };
         document.addEventListener('fullscreenchange', onFsChange);
         return () => document.removeEventListener('fullscreenchange', onFsChange);
-    }, []);
+    }, [isMobile]);
 
     const toggleMute = () => {
         setIsMuted(!isMuted);
-        // 在这里添加静音或取消静音的逻辑
         if (gameIframeRef.current) {
             if (!isMuted) {
                 gameIframeRef.current.querySelectorAll('video, audio').forEach(el => {
@@ -92,36 +99,14 @@ const GameArea: React.FC<GameInfo> = ({
 
     const startGame = () => {
         setGameStarted(true);
-        // Check if it's a mobile device and then go fullscreen
         if (isMobile()) {
-            //setShowFullscreenHint(true); // Show hint instead of auto-fullscreen
-            // We need a slight delay to ensure the iframe is in the DOM and rendered
-            // before trying to make it fullscreen.
-            // Otherwise, requestFullscreen might be called on an element that isn't fully ready.
-            setTimeout(() => { // Removed auto-fullscreen
+            setTimeout(() => {
                 if (fullScreenButtonRef.current) {
                     fullScreenButtonRef.current.click();
                 }
             }, 1000);
         }
     };
-
-    const isMobile = (): boolean => {
-        if (typeof window === 'undefined') return false;
-        const matchMediaCheck = window.matchMedia('(max-width: 767px)').matches;
-        console.log('matchMediaCheck', matchMediaCheck);
-        const userAgentCheck = /android|iphone|ipad|ipod|windows phone/i.test(
-            navigator.userAgent || ''
-        );
-        console.log('userAgentCheck', userAgentCheck);
-        return matchMediaCheck || userAgentCheck;
-    };
-
-    // useEffect(() => {
-    //     setTimeout(() => {
-    //         setGameStarted(true);
-    //     }, 5000);
-    // }, []);
 
     const handleFullscreenButtonClick = async () => {
         if (showFullscreenHint) {
@@ -136,7 +121,7 @@ const GameArea: React.FC<GameInfo> = ({
             {/* Game Iframe or Play Now */}
             <div className="w-full aspect-video rounded-lg relative flex-1">
                 {gameStarted ? (
-                    <div id="iframe-container" title={name} className='w-full h-full flex justify-center items-center'>
+                    <div id="iframe-container" ref={fullscreenContainerRef} title={name} className='w-full h-full flex justify-center items-center relative'>
                         <iframe
                             title={name}
                             ref={gameIframeRef}
@@ -146,6 +131,16 @@ const GameArea: React.FC<GameInfo> = ({
                             allowFullScreen
                             allow="fullscreen; screen-orientation-lock"
                         />
+                        {isFullscreenActive && (
+                            <button
+                                title="退出全屏"
+                                onClick={handleFullscreen}
+                                className="fixed top-3 right-3 p-2 bg-black bg-opacity-60 hover:bg-opacity-80 text-white rounded-full z-[2147483647] transition-opacity duration-200"
+                                style={{ WebkitTapHighlightColor: 'transparent' }}
+                            >
+                                <Minimize2 size={20} strokeWidth={2.5} />
+                            </button>
+                        )}
                     </div>
                 ) : (
                     <div className="w-full h-full flex flex-col justify-center items-center rounded-lg overflow-hidden relative">
@@ -205,35 +200,30 @@ const GameArea: React.FC<GameInfo> = ({
                         {[1, 2, 3, 4, 5].map((star) => (
                             <Star key={star} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
                         ))}
-                        {/* <Star className="w-6 h-6 fill-yellow-400 text-yellow-400" strokeWidth={1} /> */}
                         <span className="ml-2 text-sm text-white font-catamaran">{votes} votes {score}/5</span>
                     </div>
                 </div>
 
-                <div className="flex gap-2 relative"> {/* Parent of button and hint */}
+                <div className="flex gap-2 relative">
                     {showFullscreenHint && isMobile() && gameStarted && (
                         <div className="absolute top-1/2 right-full transform -translate-y-1/2 flex items-center z-50 pointer-events-none animate-horizontal-shuttle">
                             <div className="px-2 py-1 bg-amber-600 text-white rounded-md shadow-lg text-nowrap">
                                 <span>Click Fullscreen</span>
                             </div>
                             <svg
-                                className="w-4 h-4 text-amber-600" // Arrow color matches tooltip background
+                                className="w-4 h-4 text-amber-600"
                                 fill="currentColor"
-                                viewBox="0 0 8 8" // Changed viewBox to be square
+                                viewBox="0 0 8 8"
                             >
-                                <path d="M0 0L8 4L0 8V0Z" /> {/* Adjusted path for square viewBox */}
+                                <path d="M0 0L8 4L0 8V0Z" />
                             </svg>
                         </div>
                     )}
-                    {/* <button className="p-2" onClick={toggleMute}>
-                                    {isMuted ? <VolumeX color='#eab308' strokeWidth={4} size={24} /> : <Volume2 color='#eab308' strokeWidth={4} size={24} />}
-                                </button> */}
                     {gameStarted && (
                         <button ref={fullScreenButtonRef}
                             title='Fullscreen'
                             className="p-2"
-                            onClick={handleFullscreenButtonClick}> {/* Use new handler */}
-                            {/* <Fullscreen color='#eab308' strokeWidth={4} size={24} /> */}
+                            onClick={handleFullscreenButtonClick}>
                             <svg className='text-gray-700 dark:text-gray-100' focusable="false" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
                                 <path
                                     fill='currentColor'
