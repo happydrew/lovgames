@@ -83,7 +83,7 @@ const GameArea: React.FC<GameInfo> = ({
             // Otherwise, requestFullscreen might be called on an element that isn't fully ready.
             setTimeout(() => {
                 handleFullscreen();
-            }, 200); // 100ms delay, can be adjusted
+            }, 5000);
         }
     };
 
