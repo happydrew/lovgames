@@ -66,7 +66,7 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
       <Script strategy='lazyOnload' async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4907197973761221" crossOrigin="anonymous"></Script>
 
       {/* monetag */}
-{/*       <Script>
+      {/* <Script>
         {`
         (function(d,z,s){s.src='https://'+d+'/401/'+z;try{(document.body||document.documentElement).appendChild(s)}catch(e){}})('groleegni.net',9385951,document.createElement('script'))
         `}
@@ -79,7 +79,7 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
       </Script> */}
 
       {/* adsterra banner */}
-{/*       <Script strategy='lazyOnload' type="text/javascript">
+      {/* <Script strategy='lazyOnload' type="text/javascript">
         {`
         atOptions = {
           'key' : 'b14ecaf7ba922d58c6328006b470fd04',
@@ -93,7 +93,7 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
       <Script strategy='lazyOnload' type="text/javascript" src="//www.highperformanceformat.com/b14ecaf7ba922d58c6328006b470fd04/invoke.js"></Script> */}
 
       {/* adsterra banner */}
-{/*       <Script strategy='lazyOnload' type="text/javascript">
+      {/* <Script strategy='lazyOnload' type="text/javascript">
         {`
         atOptions = {
           'key' : '5d8681ea81dce92641d324ff2850aa08',

@@ -24,14 +24,15 @@ const GamePage = ({
             </div> */}
 
             {/* Game name */}
-            <h1 className='text-center mb-2'>{main_game.name}</h1>
+            {/* <h1 className='text-center mb-2'>{main_game.name}</h1> */}
 
             {/* adsterra */}
-            {/* <script async data-cfasync="false" src="//pl26416490.profitableratecpm.com/31a50d07a2355afffb47dc172427319e/invoke.js"></script>
-            <div id="container-31a50d07a2355afffb47dc172427319e"></div> */}
+            <script async data-cfasync="false" src="//pl26416490.profitableratecpm.com/31a50d07a2355afffb47dc172427319e/invoke.js"></script>
+            {/* <div id="container-31a50d07a2355afffb47dc172427319e"></div> */}
 
             {/* Game area */}
-            <div className="w-full flex flex-col lg:flex-row justify-center items-center">
+            <div id="game-region"
+                className="w-full flex flex-col lg:flex-row justify-start items-center mb-8">
 
                 {/* left ads */}
                 {/* <div id="left-ads" className="scale-[90%] gap-4 lg:gap-6 w-full lg:w-1/6 flex flex-col justify-center items-center border border-zinc-700 relative">
@@ -41,14 +42,9 @@ const GamePage = ({
 
                 {/* <div id="container-31a50d07a2355afffb47dc172427319e"></div> */}
 
-                <div id="game-region" className="w-full lg:w-3/4 flex flex-col lg:flex-row justify-center items-center gap-2 mb-8">
-                    <div id="left-side" className="order-2 lg:order-1 lg:h-full lg:flex-col flex flex-row flex-wrap justify-between items-center gap-4">
-                        {relate_games && relate_games.slice(0, 5).map(game => (
-                            <GameCard name={game.name} href={game.href} image={game.image} />
-                        ))}
-                    </div>
+                <div id="game-region" className="w-full lg:w-[80%] flex flex-col lg:flex-row justify-center items-center gap-2">
 
-                    <div className="order-1 lg:order-2 flex-1 w-full h-full lg:max-w-[60rem]">
+                    <div className="flex-1 w-full h-full">
                         <GameArea name={main_game.name}
                             iframe_url={main_game.iframe_url}
                             votes={main_game.votes}
@@ -57,11 +53,17 @@ const GamePage = ({
                         />
                     </div>
 
-                    <div id="left-side" className="order-3 lg:h-full lg:flex-col flex flex-wrap justify-center items-center gap-4">
-                        {relate_games && relate_games.length > 5 && relate_games.slice(5, 10).map(game => (
-                            <GameCard name={game.name} href={game.href} image={game.image} />
+                    <div id="right-side" className="h-full w-full lg:w-1/5 flex flex-row flex-wrap justify-center items-center gap-2">
+                        {relate_games && relate_games.slice(0, 10).map(game => (
+                            <GameCard name={game.name} href={game.href} image={game.image} width={120} height={120} />
                         ))}
                     </div>
+
+                    {/* <div id="left-side" className="h-full lg:flex-col flex flex-wrap justify-center items-center gap-2">
+                        {relate_games && relate_games.length > 5 && relate_games.slice(5, 10).map(game => (
+                            <GameCard name={game.name} href={game.href} image={game.image} width={110} height={110} />
+                        ))}
+                    </div> */}
                 </div>
 
                 {/* right ads */}
@@ -69,7 +71,7 @@ const GamePage = ({
                     <script async data-cfasync="false" src="//pl26416490.profitableratecpm.com/31a50d07a2355afffb47dc172427319e/invoke.js"></script>
                     <div id="container-31a50d07a2355afffb47dc172427319e"></div>
                 </div> */}
-                {/* <div id="container-31a50d07a2355afffb47dc172427319e"></div> */}
+                <div id="container-31a50d07a2355afffb47dc172427319e" className="w-full lg:w-[20%] min-h-[600px] bg-[#212233] mx-2"></div>
 
 
             </div>
@@ -82,11 +84,11 @@ const GamePage = ({
                     {Article && <Article />}
                 </div>
 
-                <div id="recommand" className="w-full lg:w-[48%] flex flex-col py-2 justify-center items-center gap-4 border-4 border-green-900 rounded-2xl">
+                <div id="recommand" className="w-full lg:w-[48%] flex flex-col py-2 justify-center items-center gap-2 border-4 border-green-900 rounded-2xl">
                     <p className="text-2xl font-header font-semibold text-sky-500">Recommended Games</p>
-                    <div className="w-full flex flex-wrap justify-center items-center gap-4 px-0 py-2">
+                    <div className="w-full flex flex-wrap justify-center items-center gap-2 px-0 py-2">
                         {relate_games && relate_games.length > 10 && relate_games.slice(10).map(game => (
-                            <GameCard name={game.name} href={game.href} image={game.image} />
+                            <GameCard name={game.name} href={game.href} image={game.image} width={120} height={120} />
                         ))}
                     </div>
 

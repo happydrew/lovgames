@@ -12,26 +12,33 @@ body {
 }
 
 h1 {
-  @apply text-3xl font-header text-sky-500 font-semibold;
+  /* @apply text-3xl font-header text-sky-500 font-semibold; */
+  @apply text-3xl font-header dark:text-gray-100 font-semibold;
 }
 
 h2 {
-  @apply text-2xl font-header font-medium text-purple-500;
+  /* @apply text-2xl font-header font-medium text-purple-500; */
+  @apply text-2xl font-header dark:text-gray-100 font-medium;
 }
 
 h3 {
-  @apply text-xl font-header font-normal text-amber-500;
+  /* @apply text-xl font-header font-normal text-amber-500; */
+  @apply text-xl font-header dark:text-gray-100 font-normal;
 }
 
-h4, h5, h6 {
+h4,
+h5,
+h6 {
   @apply text-lg font-header !font-normal text-gray-300;
 }
 
-p, li {
+p,
+li {
   @apply text-gray-400 text-base leading-relaxed tracking-wide font-body text-[1.1rem];
 }
 
-p strong, li strong {
+p strong,
+li strong {
   @apply text-gray-300;
 }
 
