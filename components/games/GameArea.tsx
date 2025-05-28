@@ -28,6 +28,7 @@ const GameArea: React.FC<GameInfo> = ({
                 // }
             } else {
                 // Entering fullscreen
+                await gameIframeRef.current.requestFullscreen();
                 if (isMobile()) {
                     // It's a mobile device
                     if (screen.orientation && typeof (screen.orientation as any).lock === 'function') {
@@ -42,7 +43,6 @@ const GameArea: React.FC<GameInfo> = ({
                         console.warn('屏幕方向API screen.orientation.lock 不可用或不存在');
                     }
                 }
-                await gameIframeRef.current.requestFullscreen();
             }
         }
     };
@@ -70,16 +70,20 @@ const GameArea: React.FC<GameInfo> = ({
             // We need a slight delay to ensure the iframe is in the DOM and rendered
             // before trying to make it fullscreen.
             // Otherwise, requestFullscreen might be called on an element that isn't fully ready.
-            handleFullscreen();
+            setTimeout(() => {
+                handleFullscreen();
+            }, 200); // 100ms delay, can be adjusted
         }
     };
 
     const isMobile = (): boolean => {
         if (typeof window === 'undefined') return false;
         const matchMediaCheck = window.matchMedia('(max-width: 767px)').matches;
+        console.log('matchMediaCheck', matchMediaCheck);
         const userAgentCheck = /android|iphone|ipad|ipod|windows phone/i.test(
             navigator.userAgent || ''
         );
+        console.log('userAgentCheck', userAgentCheck);
         return matchMediaCheck || userAgentCheck;
     };
 
