@@ -88,3 +88,21 @@ iframe:-moz-full-screen {
   width: 100vw !important;
   height: 100vh !important;
 }
+
+/* In your global CSS file */
+@keyframes horizontal-shuttle {
+  0%, 100% {
+    /* The element is already positioned by Tailwind's right-full and transform -translate-y-1/2.
+       We only add a small horizontal offset for the shuttle animation. */
+    transform: translateY(-50%) translateX(0px);
+  }
+  50% {
+    transform: translateY(-50%) translateX(8px); /* Shuttle left by 8px */
+  }
+}
+
+.animate-horizontal-shuttle {
+  /* Tailwind classes like 'absolute top-1/2 right-full transform -translate-y-1/2' handle initial positioning.
+     This animation class adds the shuttle movement. */
+  animation: horizontal-shuttle 1.5s ease-in-out infinite;
+}

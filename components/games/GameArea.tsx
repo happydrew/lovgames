@@ -13,6 +13,21 @@ const GameArea: React.FC<GameInfo> = ({
     const gameIframeRef = useRef<HTMLIFrameElement>(null);
     const [isMuted, setIsMuted] = useState(false);
     const [gameStarted, setGameStarted] = useState(false);
+    const [showFullscreenHint, setShowFullscreenHint] = useState(false);
+
+    useEffect(() => {
+        let timer: NodeJS.Timeout;
+        if (showFullscreenHint) {
+            timer = setTimeout(() => {
+                setShowFullscreenHint(false);
+            }, 15000); // Hide after 5 seconds
+        }
+        return () => {
+            if (timer) {
+                clearTimeout(timer);
+            }
+        };
+    }, [showFullscreenHint]);
 
     const handleFullscreen = async () => {
         if (gameIframeRef.current) {
@@ -78,12 +93,13 @@ const GameArea: React.FC<GameInfo> = ({
         setGameStarted(true);
         // Check if it's a mobile device and then go fullscreen
         if (isMobile()) {
+            setShowFullscreenHint(true); // Show hint instead of auto-fullscreen
             // We need a slight delay to ensure the iframe is in the DOM and rendered
             // before trying to make it fullscreen.
             // Otherwise, requestFullscreen might be called on an element that isn't fully ready.
-            setTimeout(() => {
-                handleFullscreen();
-            }, 5000);
+            // setTimeout(() => { // Removed auto-fullscreen
+            // handleFullscreen();
+            // }, 200);
         }
     };
 
@@ -103,6 +119,13 @@ const GameArea: React.FC<GameInfo> = ({
     //         setGameStarted(true);
     //     }, 5000);
     // }, []);
+
+    const handleFullscreenButtonClick = async () => {
+        if (showFullscreenHint) {
+            setShowFullscreenHint(false);
+        }
+        await handleFullscreen();
+    };
 
     return (
         <div className="flex-1 w-full flex flex-col justify-center items-center bg-[#212233] rounded-lg">
@@ -184,12 +207,26 @@ const GameArea: React.FC<GameInfo> = ({
                     </div>
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex gap-2 relative"> {/* Parent of button and hint */}
+                    {showFullscreenHint && isMobile() && gameStarted && (
+                        <div className="absolute top-1/2 right-full transform -translate-y-1/2 flex items-center z-50 pointer-events-none animate-horizontal-shuttle">
+                            <div className="px-2 py-1 bg-amber-600 text-white rounded-md shadow-lg text-nowrap">
+                                <span>Click Fullscreen</span>
+                            </div>
+                            <svg
+                                className="w-4 h-4 text-amber-600" // Arrow color matches tooltip background
+                                fill="currentColor"
+                                viewBox="0 0 8 8" // Changed viewBox to be square
+                            >
+                                <path d="M0 0L8 4L0 8V0Z" /> {/* Adjusted path for square viewBox */}
+                            </svg>
+                        </div>
+                    )}
                     {/* <button className="p-2" onClick={toggleMute}>
                                     {isMuted ? <VolumeX color='#eab308' strokeWidth={4} size={24} /> : <Volume2 color='#eab308' strokeWidth={4} size={24} />}
                                 </button> */}
                     {gameStarted && (
-                        <button title='Fullscreen' className="p-2" onClick={handleFullscreen}>
+                        <button title='Fullscreen' className="p-2" onClick={handleFullscreenButtonClick}> {/* Use new handler */}
                             {/* <Fullscreen color='#eab308' strokeWidth={4} size={24} /> */}
                             <svg className='text-gray-700 dark:text-gray-100' focusable="false" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
                                 <path
