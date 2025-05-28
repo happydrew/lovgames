@@ -70,3 +70,21 @@ code.text-\[\.9em\] {
   color: white;
   /* 白色填充 */
 }
+
+/* 标准 */
+iframe:fullscreen {
+  width: 100vw !important;
+  height: 100vh !important;
+  border: none !important;
+}
+
+/* 各浏览器前缀 */
+iframe:-webkit-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+}
+
+iframe:-moz-full-screen {
+  width: 100vw !important;
+  height: 100vh !important;
+}
