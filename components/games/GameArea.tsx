@@ -14,6 +14,7 @@ const GameArea: React.FC<GameInfo> = ({
     const [isMuted, setIsMuted] = useState(false);
     const [gameStarted, setGameStarted] = useState(false);
     const [showFullscreenHint, setShowFullscreenHint] = useState(false);
+    const fullScreenButtonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
         let timer: NodeJS.Timeout;
@@ -93,13 +94,15 @@ const GameArea: React.FC<GameInfo> = ({
         setGameStarted(true);
         // Check if it's a mobile device and then go fullscreen
         if (isMobile()) {
-            setShowFullscreenHint(true); // Show hint instead of auto-fullscreen
+            //setShowFullscreenHint(true); // Show hint instead of auto-fullscreen
             // We need a slight delay to ensure the iframe is in the DOM and rendered
             // before trying to make it fullscreen.
             // Otherwise, requestFullscreen might be called on an element that isn't fully ready.
-            // setTimeout(() => { // Removed auto-fullscreen
-            // handleFullscreen();
-            // }, 200);
+            setTimeout(() => { // Removed auto-fullscreen
+                if (fullScreenButtonRef.current) {
+                    fullScreenButtonRef.current.click();
+                }
+            }, 1000);
         }
     };
 
@@ -226,7 +229,10 @@ const GameArea: React.FC<GameInfo> = ({
                                     {isMuted ? <VolumeX color='#eab308' strokeWidth={4} size={24} /> : <Volume2 color='#eab308' strokeWidth={4} size={24} />}
                                 </button> */}
                     {gameStarted && (
-                        <button title='Fullscreen' className="p-2" onClick={handleFullscreenButtonClick}> {/* Use new handler */}
+                        <button ref={fullScreenButtonRef}
+                            title='Fullscreen'
+                            className="p-2"
+                            onClick={handleFullscreenButtonClick}> {/* Use new handler */}
                             {/* <Fullscreen color='#eab308' strokeWidth={4} size={24} /> */}
                             <svg className='text-gray-700 dark:text-gray-100' focusable="false" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
                                 <path
