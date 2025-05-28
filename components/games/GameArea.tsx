@@ -19,33 +19,43 @@ const GameArea: React.FC<GameInfo> = ({
             if (document.fullscreenElement) {
                 await document.exitFullscreen();
                 // Consider unlocking orientation if needed when exiting fullscreen on mobile
-                // if (/Mobi|Android|iPhone/i.test(navigator.userAgent) && screen.orientation && typeof screen.orientation.unlock === 'function') {
-                //     try {
-                //         screen.orientation.unlock();
-                //     } catch (err) {
-                //         console.warn('屏幕方向解锁失败:', err);
-                //     }
-                // }
+
             } else {
                 // Entering fullscreen
                 await gameIframeRef.current.requestFullscreen();
-                if (isMobile()) {
-                    // It's a mobile device
-                    if (screen.orientation && typeof (screen.orientation as any).lock === 'function') {
-                        try {
-                            await (screen.orientation as any).lock('portrait-primary');
-                            console.log('屏幕已锁定为竖屏');
-                        } catch (err) {
-                            console.warn('竖屏锁定失败:', err);
-                            // Fallback or decide if fullscreen should still be attempted
-                        }
-                    } else {
-                        console.warn('屏幕方向API screen.orientation.lock 不可用或不存在');
-                    }
-                }
             }
         }
     };
+
+    // 1. 在组件挂载时，监听全屏切换
+    useEffect(() => {
+        const onFsChange = async () => {
+            if (document.fullscreenElement) {
+                if (isMobile() && screen.orientation &&
+                    typeof (screen.orientation as any).lock === 'function') {
+                    try {
+                        await (screen.orientation as any).lock('portrait-primary');
+                        console.log('屏幕已锁定为竖屏');
+                    } catch (err) {
+                        console.warn('竖屏锁定失败:', err);
+                    }
+                } else {
+                    console.warn('屏幕方向API screen.orientation.lock 不可用或不存在');
+                }
+            } else {
+                if (isMobile() && screen.orientation &&
+                    typeof screen.orientation.unlock === 'function') {
+                    try {
+                        screen.orientation.unlock();
+                    } catch (err) {
+                        console.warn('屏幕方向解锁失败:', err);
+                    }
+                }
+            }
+        };
+        document.addEventListener('fullscreenchange', onFsChange);
+        return () => document.removeEventListener('fullscreenchange', onFsChange);
+    }, []);
 
     const toggleMute = () => {
         setIsMuted(!isMuted);
@@ -107,6 +117,7 @@ const GameArea: React.FC<GameInfo> = ({
                             className="w-full h-full overflow-hidden"
                             tabIndex={0}
                             allowFullScreen
+                            allow="fullscreen; screen-orientation-lock"
                         />
                     </div>
                 ) : (
