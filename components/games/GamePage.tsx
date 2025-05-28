@@ -27,7 +27,7 @@ const GamePage = ({
             {/* <h1 className='text-center mb-2'>{main_game.name}</h1> */}
 
             {/* adsterra */}
-            <script async data-cfasync="false" src="//pl26416490.profitableratecpm.com/31a50d07a2355afffb47dc172427319e/invoke.js"></script>
+            {/* <script async data-cfasync="false" src="//pl26416490.profitableratecpm.com/31a50d07a2355afffb47dc172427319e/invoke.js"></script> */}
             {/* <div id="container-31a50d07a2355afffb47dc172427319e"></div> */}
 
             {/* Game area */}
@@ -71,7 +71,8 @@ const GamePage = ({
                     <script async data-cfasync="false" src="//pl26416490.profitableratecpm.com/31a50d07a2355afffb47dc172427319e/invoke.js"></script>
                     <div id="container-31a50d07a2355afffb47dc172427319e"></div>
                 </div> */}
-                <div id="container-31a50d07a2355afffb47dc172427319e" className="w-full lg:w-[20%] min-h-[600px] bg-[#212233] mx-2"></div>
+                {/* <div id="container-31a50d07a2355afffb47dc172427319e" className="w-full lg:w-[20%] min-h-[600px] bg-[#212233] mx-2"></div> */}
+                <div className="w-full lg:w-[20%] min-h-[600px] bg-[#212233] mx-2"></div>
 
 
             </div>
