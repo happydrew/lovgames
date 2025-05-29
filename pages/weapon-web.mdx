@@ -1,5 +1,24 @@
-{
-    "hot_games": [
+---
+title: Weapon Web
+description: Weapon Web is a fast paced weapon game with a unique weapon system.
+date: 2025-02-15
+image: /assets/images/games/weapon-web.webp
+---
+
+import GamePage from '@components/games/GamePage';
+import Article from '@components/games/Article_Basket_Bros';
+  
+<GamePage 
+    main_game={{
+    name: "Weapon Web",
+    iframe_url: "https://qtweb.qtjoy.com/games/WeaponWeb/index.html",
+    votes: 5328,
+    score: 4.7,
+    image: "/assets/images/games/weapon-web.webp",
+    portrait: true
+}} 
+
+    relate_games={[
         {
             "name": "Zombie's On",
             "href": "/zombies-on",
@@ -11,13 +30,16 @@
             "image": "/assets/images/games/rush-riders.webp"
         },
         {
+            "name": "Cat Shot Rogou",
+            "href": "/cat-shot-rogou",
+            "image": "/assets/images/games/cat-shot-rogou.webp"
+        },
+        {
             "name": "Weapon Web",
             "href": "/weapon-web",
             "image": "/assets/images/games/weapon-web.webp"
-        }
-    ],
-    "crazy_games": [
-        {
+        },
+                {
             "name": "Crazy Cattle 3D",
             "href": "/crazy-cattle-3d",
             "image": "/assets/images/games/crazy-cattle-3d.webp"
@@ -56,10 +78,8 @@
             "name": "Crazy Stunt Cars Multiplayer",
             "href": "/crazy-stunt-cars-multiplayer",
             "image": "/assets/images/games/crazy-stunt-cars-multiplayer.webp"
-        }
-    ],
-    "rush_games": [
-        {
+        },
+                {
             "name": "Curve Rush",
             "href": "/curve-rush",
             "image": "/assets/images/games/curve-rush.webp"
@@ -80,11 +100,6 @@
             "image": "/assets/images/games/cluster-rush.webp"
         },
         {
-            "name": "Curve Ball 3D",
-            "href": "/curve-ball-3d",
-            "image": "/assets/images/games/curve-ball-3d.webp"
-        },
-        {
             "name": "Curveball",
             "href": "/curveball",
             "image": "/assets/images/games/curveball.webp"
@@ -93,10 +108,8 @@
             "name": "Tunnel Rush",
             "href": "/tunnel-rush",
             "image": "/assets/images/games/tunnel-rush.webp"
-        }
-    ],
-    "baseball_games": [
-        {
+        },
+                {
             "name": "Baseball Bros IO",
             "href": "/baseball-bros-io",
             "image": "/assets/images/games/baseball-bros-io.webp"
@@ -107,7 +120,7 @@
             "image": "/assets/images/games/basebrawl.webp"
         },
         {
-            "name": "Basket Bros",
+            "name":"Basket Bros",
             "href": "/basket-bros",
             "image": "/assets/images/games/basket-bros.webp"
         },
@@ -121,5 +134,5 @@
             "href": "/football-bros",
             "image": "/assets/images/games/football-bros.webp"
         }
-    ]
-}
+    ]}
+ />

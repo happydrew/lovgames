@@ -47,9 +47,14 @@ const HomePage: React.FC = () => {
             "image": "/assets/images/games/rush-riders.webp"
         },
         {
-            "name": "Cocos Creator",
-            "href": "/cocos-creator",
-            "image": "/assets/images/games/cocos-creator.webp"
+            "name": "Cat Shot Rogou",
+            "href": "/cat-shot-rogou",
+            "image": "/assets/images/games/cat-shot-rogou.webp"
+        },
+        {
+            "name": "Weapon Web",
+            "href": "/weapon-web",
+            "image": "/assets/images/games/weapon-web.webp"
         }
     ];
     const newGames: Game[] = [
@@ -64,9 +69,9 @@ const HomePage: React.FC = () => {
             "image": "/assets/images/games/rush-riders.webp"
         },
         {
-            "name": "Cocos Creator",
-            "href": "/cocos-creator",
-            "image": "/assets/images/games/cocos-creator.webp"
+            "name": "Weapon Web",
+            "href": "/weapon-web",
+            "image": "/assets/images/games/weapon-web.webp"
         }
     ]
     const crazyGames: Game[] = [

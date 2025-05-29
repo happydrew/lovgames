@@ -45,12 +45,7 @@ const GamePage = ({
                 <div id="game-region" className="w-full lg:w-[80%] flex flex-col lg:flex-row justify-center items-center gap-2">
 
                     <div className="flex-1 w-full h-full">
-                        <GameArea name={main_game.name}
-                            iframe_url={main_game.iframe_url}
-                            votes={main_game.votes}
-                            score={main_game.score}
-                            image={main_game.image}
-                        />
+                        <GameArea {...main_game} />
                     </div>
 
                     <div id="right-side" className="h-full w-full lg:w-1/5 flex flex-row flex-wrap justify-center items-center gap-2">

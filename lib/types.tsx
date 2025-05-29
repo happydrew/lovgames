@@ -10,4 +10,6 @@ interface GameInfo {
     votes?: number;
     score?: number;
     article?: string;
+    portrait?: boolean;
+
 }

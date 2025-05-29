@@ -7,7 +7,8 @@ const GameArea: React.FC<GameInfo> = ({
     iframe_url,
     votes,
     score,
-    image
+    image,
+    portrait
 }: GameInfo) => {
 
     const gameIframeRef = useRef<HTMLIFrameElement>(null);
@@ -18,14 +19,14 @@ const GameArea: React.FC<GameInfo> = ({
     const [isFullscreenActive, setIsFullscreenActive] = useState(false);
     const fullscreenContainerRef = useRef<HTMLDivElement>(null);
 
-    const isMobile = useCallback((): boolean => {
+    function isMobile(): boolean {
         if (typeof window === 'undefined') return false;
         const matchMediaCheck = window.matchMedia('(max-width: 767px)').matches;
         const userAgentCheck = /android|iphone|ipad|ipod|windows phone/i.test(
             navigator.userAgent || ''
         );
         return matchMediaCheck || userAgentCheck;
-    }, []);
+    }
 
     useEffect(() => {
         let timer: NodeJS.Timeout;
@@ -52,6 +53,7 @@ const GameArea: React.FC<GameInfo> = ({
 
     useEffect(() => {
         const onFsChange = async () => {
+            console.log('fullscreenchange event');
             setIsFullscreenActive(!!document.fullscreenElement);
 
             if (document.fullscreenElement && isMobile()) {
@@ -99,12 +101,15 @@ const GameArea: React.FC<GameInfo> = ({
 
     const startGame = () => {
         setGameStarted(true);
+
         if (isMobile()) {
-            setTimeout(() => {
-                if (fullScreenButtonRef.current) {
-                    fullScreenButtonRef.current.click();
-                }
-            }, 1000);
+            console.log('is on Mobile');
+            handleFullscreenButtonClick();
+            const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+            // Check for iPhone
+            if (/iPhone/i.test(userAgent)) {
+                setShowFullscreenHint(true);
+            }
         }
     };
 
@@ -119,77 +124,79 @@ const GameArea: React.FC<GameInfo> = ({
         <div className="flex-1 w-full flex flex-col justify-center items-center bg-[#212233] rounded-lg">
 
             {/* Game Iframe or Play Now */}
-            <div className="w-full aspect-video rounded-lg relative flex-1">
-                {gameStarted ? (
-                    <div id="iframe-container" ref={fullscreenContainerRef} title={name} className='w-full h-full flex justify-center items-center relative'>
-                        <iframe
-                            title={name}
-                            ref={gameIframeRef}
-                            src={iframe_url}
-                            className="w-full h-full overflow-hidden"
-                            tabIndex={0}
-                            allowFullScreen
-                            allow="fullscreen; screen-orientation-lock"
-                        />
-                        {isFullscreenActive && (
-                            <button
-                                title="退出全屏"
-                                onClick={handleFullscreen}
-                                className="fixed top-3 right-3 p-2 bg-black bg-opacity-60 hover:bg-opacity-80 text-white rounded-full z-[2147483647] transition-opacity duration-200"
-                                style={{ WebkitTapHighlightColor: 'transparent' }}
-                            >
-                                <Minimize2 size={20} strokeWidth={2.5} />
-                            </button>
-                        )}
-                    </div>
-                ) : (
-                    <div className="w-full h-full flex flex-col justify-center items-center rounded-lg overflow-hidden relative">
-                        {/* 背景图片带模糊效果 */}
-                        <div
-                            className="absolute inset-0 z-0"
-                            style={{
-                                backgroundImage: `url(${image})`,
-                                backgroundSize: 'cover',
-                                backgroundPosition: 'center',
-                                filter: 'blur(50px) brightness(0.5)',
-                                transform: 'scale(1.1)', // 防止模糊边缘
-                            }}
-                        />
-
-                        {/* 彩色渐变叠加层 */}
-                        <div
-                            className="absolute inset-0 z-0 opacity-40"
-                            style={{
-                                background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.8) 0%, rgba(139, 92, 246, 0.6) 50%, rgba(236, 72, 153, 0.5) 100%)',
-                                mixBlendMode: 'overlay',
-                            }}
-                        />
-
-                        {/* 内容层 */}
-                        <div className="z-10 flex flex-col items-center">
-                            <div className="mb-4">
-                                <img
-                                    src={image}
-                                    alt={name}
-                                    className="w-64 h-auto rounded-lg shadow-lg"
-                                    onError={(e) => {
-                                        (e.target as HTMLImageElement).src = '/images/game-thumbnails/default.jpg';
-                                    }}
-                                />
-                            </div>
-                            <div className="text-3xl font-header m-4 text-white">{name}</div>
-                            <button
-                                className="bg-indigo-600 hover:bg-indigo-700 text-xl text-white font-bold py-3 px-10 rounded-full flex items-center shadow-lg"
-                                onClick={startGame}
-                            >
-                                Play Now
-                                <svg className="ml-2 w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
+            <div className="w-full aspect-video rounded-lg relative flex-1 flex justify-center items-center">
+                {isFullscreenActive && (
+                    <button
+                        title="退出全屏"
+                        onClick={handleFullscreen}
+                        className="fixed top-3 right-2 p-2 bg-black bg-opacity-60 hover:bg-opacity-80 text-white rounded-full z-[2147483647] transition-opacity duration-200"
+                        style={{ WebkitTapHighlightColor: 'transparent' }}
+                    >
+                        <Minimize2 size={20} strokeWidth={2.5} />
+                    </button>
                 )}
+                <div id="iframe-container"
+                    ref={fullscreenContainerRef}
+                    title={name}
+                    className={`h-full ${portrait ? 'aspect-[9/16]' : 'aspect-video'}`}
+                >
+                    {gameStarted && <iframe
+                        title={name}
+                        ref={gameIframeRef}
+                        src={iframe_url}
+                        className="w-full h-full overflow-hidden"
+                        tabIndex={0}
+                        allowFullScreen
+                        allow="fullscreen; screen-orientation-lock"
+                    />}
+
+                </div>
+                <div className={`absolute ${gameStarted ? 'hidden' : 'z-1000'} inset-0 w-full h-full flex flex-col justify-center items-center rounded-lg overflow-hidden`}>
+                    {/* 背景图片带模糊效果 */}
+                    <div
+                        className="absolute inset-0 z-0"
+                        style={{
+                            backgroundImage: `url(${image})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            filter: 'blur(50px) brightness(0.5)',
+                            transform: 'scale(1.1)', // 防止模糊边缘
+                        }}
+                    />
+
+                    {/* 彩色渐变叠加层 */}
+                    <div
+                        className="absolute inset-0 z-0 opacity-40"
+                        style={{
+                            background: 'linear-gradient(135deg, rgba(79, 70, 229, 0.8) 0%, rgba(139, 92, 246, 0.6) 50%, rgba(236, 72, 153, 0.5) 100%)',
+                            mixBlendMode: 'overlay',
+                        }}
+                    />
+
+                    {/* 内容层 */}
+                    <div className="z-10 flex flex-col items-center">
+                        <div className="mb-4">
+                            <img
+                                src={image}
+                                alt={name}
+                                className="w-64 h-auto rounded-lg shadow-lg"
+                                onError={(e) => {
+                                    (e.target as HTMLImageElement).src = '/images/game-thumbnails/default.jpg';
+                                }}
+                            />
+                        </div>
+                        <div className="text-3xl font-header m-4 text-white">{name}</div>
+                        <button
+                            className="bg-indigo-600 hover:bg-indigo-700 text-xl text-white font-bold py-3 px-10 rounded-full flex items-center shadow-lg"
+                            onClick={startGame}
+                        >
+                            Play Now
+                            <svg className="ml-2 w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
+                                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
             </div>
 
             {/* Bottom Bar */}

@@ -71,9 +71,9 @@ export default {
       layout: 'raw'
     }
   },
-  "cocos-creator": {
+  "weapon-web": {
     type: 'page',
-    title: 'Cocos Creator',
+    title: 'Weapon Web',
     display: 'hidden',
     theme: {
       layout: 'raw'
@@ -258,6 +258,14 @@ export default {
   "zombies-on": {
     type: 'page',
     title: 'Zombies On',
+    display: 'hidden',
+    theme: {
+      layout: 'raw'
+    }
+  },
+  "cat-shot-rogou": {
+    type: 'page',
+    title: 'Cat Shot Rogou',
     display: 'hidden',
     theme: {
       layout: 'raw'
