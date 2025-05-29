@@ -49,28 +49,28 @@ const GameArea: React.FC<GameInfo> = ({
             console.log(`Current fullscreen element:`, document.fullscreenElement || (document as any).webkitFullscreenElement || (document as any).mozFullScreenElement || (document as any).msFullscreenElement);
             setIsFullscreenActive(isFs);
 
-            if (isFs && isMobile()) {
-                if (screen.orientation &&
-                    typeof (screen.orientation as any).lock === 'function') {
-                    try {
-                        await (screen.orientation as any).lock('portrait-primary');
-                        console.log('屏幕已锁定为竖屏');
-                    } catch (err) {
-                        console.warn('竖屏锁定失败:', err);
-                    }
-                } else {
-                    console.warn('屏幕方向API screen.orientation.lock 不可用或不存在');
-                }
-            } else if (!isFs && isMobile()) { // Exited fullscreen on mobile
-                if (screen.orientation && typeof screen.orientation.unlock === 'function') {
-                    try {
-                        screen.orientation.unlock();
-                        console.log('屏幕方向已解锁');
-                    } catch (err) {
-                        console.warn('屏幕方向解锁失败:', err);
-                    }
-                }
-            }
+            // if (isFs && isMobile()) {
+            //     if (screen.orientation &&
+            //         typeof (screen.orientation as any).lock === 'function') {
+            //         try {
+            //             await (screen.orientation as any).lock('portrait-primary');
+            //             console.log('屏幕已锁定为竖屏');
+            //         } catch (err) {
+            //             console.warn('竖屏锁定失败:', err);
+            //         }
+            //     } else {
+            //         console.warn('屏幕方向API screen.orientation.lock 不可用或不存在');
+            //     }
+            // } else if (!isFs && isMobile()) { // Exited fullscreen on mobile
+            //     if (screen.orientation && typeof screen.orientation.unlock === 'function') {
+            //         try {
+            //             screen.orientation.unlock();
+            //             console.log('屏幕方向已解锁');
+            //         } catch (err) {
+            //             console.warn('屏幕方向解锁失败:', err);
+            //         }
+            //     }
+            // }
         };
 
         document.addEventListener('fullscreenchange', onFsChange);
