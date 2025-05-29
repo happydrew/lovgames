@@ -175,23 +175,23 @@ const GameArea: React.FC<GameInfo> = ({
 
                     {/* 内容层 */}
                     <div className="z-10 flex flex-col items-center">
-                        <div className="mb-4">
+                        <div className="mb-2 md:mb-4">
                             <img
                                 src={image}
                                 alt={name}
-                                className="w-64 h-auto rounded-lg shadow-lg"
+                                className="w-32 md:w-64 h-auto rounded-lg shadow-lg"
                                 onError={(e) => {
                                     (e.target as HTMLImageElement).src = '/images/game-thumbnails/default.jpg';
                                 }}
                             />
                         </div>
-                        <div className="text-3xl font-header m-4 text-white">{name}</div>
+                        <div className="text-lg md:text-3xl font-header m-1 md:m-4 text-white text-center">{name}</div>
                         <button
-                            className="bg-indigo-600 hover:bg-indigo-700 text-xl text-white font-bold py-3 px-10 rounded-full flex items-center shadow-lg"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-sm md:text-xl text-white font-bold py-1.5 md:py-3 px-4 md:px-10 rounded-full flex items-center shadow-lg"
                             onClick={startGame}
                         >
                             Play Now
-                            <svg className="ml-2 w-7 h-7" fill="currentColor" viewBox="0 0 20 20">
+                            <svg className="ml-1 md:ml-2 w-4 h-4 md:w-7 md:h-7" fill="currentColor" viewBox="0 0 20 20">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clipRule="evenodd" />
                             </svg>
                         </button>
@@ -202,12 +202,12 @@ const GameArea: React.FC<GameInfo> = ({
             {/* Bottom Bar */}
             <div className="w-full flex items-center justify-between px-2 py-1 rounded-t-lg">
                 <div id="left-bar" className="flex justify-start items-center gap-4">
-                    <h1 className='text-xl'>{name}</h1>
+                    <h1 className='text-sm md:text-xl'>{name}</h1>
                     <div id="right-bar" className="flex items-center gap-1">
                         {[1, 2, 3, 4, 5].map((star) => (
-                            <Star key={star} className="w-5 h-5 fill-yellow-400 text-yellow-400" />
+                            <Star key={star} className="w-4 h-4 md:w-5 md:h-5 fill-yellow-400 text-yellow-400" />
                         ))}
-                        <span className="ml-2 text-sm text-white font-catamaran">{votes} votes {score}/5</span>
+                        <span className="ml-2 text-xs md:text-sm text-white font-catamaran">{votes} votes {score}/5</span>
                     </div>
                 </div>
 
