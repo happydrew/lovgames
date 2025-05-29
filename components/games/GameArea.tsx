@@ -54,6 +54,7 @@ const GameArea: React.FC<GameInfo> = ({
     useEffect(() => {
         const onFsChange = async () => {
             console.log('fullscreenchange event');
+            console.log(`document.fullscreenElement: ${document.fullscreenElement}`);
             setIsFullscreenActive(!!document.fullscreenElement);
 
             if (document.fullscreenElement && isMobile()) {
@@ -82,7 +83,7 @@ const GameArea: React.FC<GameInfo> = ({
         };
         document.addEventListener('fullscreenchange', onFsChange);
         return () => document.removeEventListener('fullscreenchange', onFsChange);
-    }, [isMobile]);
+    }, []);
 
     const toggleMute = () => {
         setIsMuted(!isMuted);
@@ -125,21 +126,21 @@ const GameArea: React.FC<GameInfo> = ({
 
             {/* Game Iframe or Play Now */}
             <div className="w-full aspect-video rounded-lg relative flex-1 flex justify-center items-center">
-                {isFullscreenActive && (
-                    <button
-                        title="退出全屏"
-                        onClick={handleFullscreen}
-                        className="fixed top-3 right-2 p-2 bg-black bg-opacity-60 hover:bg-opacity-80 text-white rounded-full z-[2147483647] transition-opacity duration-200"
-                        style={{ WebkitTapHighlightColor: 'transparent' }}
-                    >
-                        <Minimize2 size={20} strokeWidth={2.5} />
-                    </button>
-                )}
                 <div id="iframe-container"
                     ref={fullscreenContainerRef}
                     title={name}
                     className={`h-full ${portrait ? 'aspect-[9/16]' : 'aspect-video'}`}
                 >
+                    {isFullscreenActive && (
+                        <button
+                            title="退出全屏"
+                            onClick={handleFullscreen}
+                            className="fixed top-1 right-1 p-2 bg-gray-900 bg-opacity-40 hover:bg-opacity-80 text-gray-200 rounded-full z-[2147483647] transition-opacity duration-200"
+                            style={{ WebkitTapHighlightColor: 'transparent' }}
+                        >
+                            <Minimize2 size={20} strokeWidth={2.5} />
+                        </button>
+                    )}
                     {gameStarted && <iframe
                         title={name}
                         ref={gameIframeRef}
@@ -179,7 +180,7 @@ const GameArea: React.FC<GameInfo> = ({
                             <img
                                 src={image}
                                 alt={name}
-                                className="w-32 md:w-64 h-auto rounded-lg shadow-lg"
+                                className="w-32 h-32 md:w-64 md:h-64 rounded-lg shadow-lg"
                                 onError={(e) => {
                                     (e.target as HTMLImageElement).src = '/images/game-thumbnails/default.jpg';
                                 }}
