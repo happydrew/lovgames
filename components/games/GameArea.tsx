@@ -42,22 +42,14 @@ const GameArea: React.FC<GameInfo> = ({
         };
     }, [showFullscreenHint]);
 
-    const handleFullscreen = async () => {
-        const container = fullscreenContainerRef.current;
-        if (document.fullscreenElement) {
-            await document.exitFullscreen();
-        } else if (container) {
-            await container.requestFullscreen();
-        }
-    };
-
     useEffect(() => {
         const onFsChange = async () => {
-            console.log('fullscreenchange event');
-            console.log(`document.fullscreenElement: ${document.fullscreenElement}`);
-            setIsFullscreenActive(!!document.fullscreenElement);
+            const isFs = !!(document.fullscreenElement || (document as any).webkitFullscreenElement || (document as any).mozFullScreenElement || (document as any).msFullscreenElement);
+            console.log('fullscreenchange event detected, isFullscreen:', isFs);
+            console.log(`Current fullscreen element:`, document.fullscreenElement || (document as any).webkitFullscreenElement || (document as any).mozFullScreenElement || (document as any).msFullscreenElement);
+            setIsFullscreenActive(isFs);
 
-            if (document.fullscreenElement && isMobile()) {
+            if (isFs && isMobile()) {
                 if (screen.orientation &&
                     typeof (screen.orientation as any).lock === 'function') {
                     try {
@@ -68,22 +60,31 @@ const GameArea: React.FC<GameInfo> = ({
                     }
                 } else {
                     console.warn('屏幕方向API screen.orientation.lock 不可用或不存在');
-                    alert('Please rotate your device to portrait mode');
                 }
-            } else {
-                if (isMobile() && screen.orientation &&
-                    typeof screen.orientation.unlock === 'function') {
+            } else if (!isFs && isMobile()) { // Exited fullscreen on mobile
+                if (screen.orientation && typeof screen.orientation.unlock === 'function') {
                     try {
                         screen.orientation.unlock();
+                        console.log('屏幕方向已解锁');
                     } catch (err) {
                         console.warn('屏幕方向解锁失败:', err);
                     }
                 }
             }
         };
+
         document.addEventListener('fullscreenchange', onFsChange);
-        return () => document.removeEventListener('fullscreenchange', onFsChange);
-    }, []);
+        document.addEventListener('webkitfullscreenchange', onFsChange); // Safari, Chrome (older), Opera
+        document.addEventListener('mozfullscreenchange', onFsChange);    // Firefox
+        document.addEventListener('MSFullscreenChange', onFsChange);     // IE11 / Edge
+
+        return () => {
+            document.removeEventListener('fullscreenchange', onFsChange);
+            document.removeEventListener('webkitfullscreenchange', onFsChange);
+            document.removeEventListener('mozfullscreenchange', onFsChange);
+            document.removeEventListener('MSFullscreenChange', onFsChange);
+        };
+    }, []); // isMobile function is stable, so [] is okay.
 
     const toggleMute = () => {
         setIsMuted(!isMuted);
@@ -105,7 +106,7 @@ const GameArea: React.FC<GameInfo> = ({
 
         if (isMobile()) {
             console.log('is on Mobile');
-            handleFullscreenButtonClick();
+            handleFullscreenButtonClick(); // This already calls handleFullscreen
             const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
             // Check for iPhone
             if (/iPhone/i.test(userAgent)) {
@@ -119,6 +120,58 @@ const GameArea: React.FC<GameInfo> = ({
             setShowFullscreenHint(false);
         }
         await handleFullscreen();
+    };
+
+    const handleFullscreen = async () => {
+        const container = fullscreenContainerRef.current;
+        const doc = document as any; // To handle vendor prefixed elements/methods
+
+        const isCurrentlyFullscreen = doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement;
+
+        if (isCurrentlyFullscreen) {
+            try {
+                if (doc.exitFullscreen) {
+                    await doc.exitFullscreen();
+                } else if (doc.webkitExitFullscreen) { // Safari, Chrome, Opera
+                    await doc.webkitExitFullscreen();
+                } else if (doc.mozCancelFullScreen) { // Firefox
+                    await doc.mozCancelFullScreen();
+                } else if (doc.msExitFullscreen) { // IE11 / Edge
+                    await doc.msExitFullscreen();
+                }
+                console.log('Exited fullscreen');
+            } catch (err) {
+                console.error('Error exiting fullscreen:', err);
+            }
+        } else if (container) {
+            try {
+                if (container.requestFullscreen) {
+                    await container.requestFullscreen();
+                } else if ((container as any).webkitRequestFullscreen) { // Safari, Chrome, Opera
+                    await (container as any).webkitRequestFullscreen();
+                } else if ((container as any).mozRequestFullScreen) { // Firefox
+                    await (container as any).mozRequestFullScreen();
+                } else if ((container as any).msRequestFullscreen) { // IE11 / Edge
+                    await (container as any).msRequestFullscreen();
+                } else {
+                    console.warn('Fullscreen API is not supported by this browser.');
+                    if (isMobile()) {
+                        alert('Your browser does not support fullscreen mode.');
+                    }
+                    return; // Exit if not supported
+                }
+                console.log('Requested fullscreen');
+            } catch (err) {
+                console.error('Error requesting fullscreen:', err);
+                if (isMobile() && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+                    alert('Fullscreen mode is not supported on safari browser.');
+                } else if (isMobile()) {
+                    console.log('Fullscreen mode is not supported, please try again later.');
+                }
+            }
+        } else {
+            console.warn('Fullscreen container not found.');
+        }
     };
 
     return (
