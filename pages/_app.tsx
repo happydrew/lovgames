@@ -63,7 +63,7 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
       </Head>
 
       {/* Google Adsense script */}
-      <Script strategy='lazyOnload' async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4907197973761221" crossOrigin="anonymous"></Script>
+      {/* <Script strategy='lazyOnload' async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4907197973761221" crossOrigin="anonymous"></Script> */}
 
       {/* monetag */}
       {/* <Script>
@@ -121,7 +121,7 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
       <Component {...pageProps} />
 
       {/* adsterra */}
-      <Script strategy='lazyOnload' type='text/javascript' src='//pl26416596.profitableratecpm.com/0d/2e/23/0d2e2375eb22c7adee4bcab7b29bb9c7.js'></Script>
+      {/* <Script strategy='lazyOnload' type='text/javascript' src='//pl26416596.profitableratecpm.com/0d/2e/23/0d2e2375eb22c7adee4bcab7b29bb9c7.js'></Script> */}
     </>
   )
 }
