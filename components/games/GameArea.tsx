@@ -116,8 +116,7 @@ const GameArea: React.FC<GameInfo> = ({
 
         if (isMobile()) {
             console.log('is on Mobile');
-            //await handleFullscreen(); 
-            fakeFullscreen();
+            await handleFullscreen();
         }
     };
 
@@ -127,6 +126,7 @@ const GameArea: React.FC<GameInfo> = ({
             console.error('Container not found');
             return;
         }
+
         try {
             if (screenfull.isEnabled) {
                 await screenfull.request(container);
@@ -322,7 +322,7 @@ const GameArea: React.FC<GameInfo> = ({
                         <button ref={fullScreenButtonRef}
                             title='Fullscreen'
                             className="p-2"
-                            onClick={fakeFullscreen}>
+                            onClick={handleFullscreen}>
                             <svg className='text-gray-700 dark:text-gray-100' focusable="false" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
                                 <path
                                     fill='currentColor'
