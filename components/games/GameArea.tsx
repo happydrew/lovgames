@@ -20,9 +20,8 @@ const GameArea: React.FC<GameInfo> = ({
     const [isFullscreenActive, setIsFullscreenActive] = useState(false);
     const [isFakeFullscreenActive, setIsFakeFullscreenActive] = useState(false);
     const originalStylesRef = useRef<{
-        container: { style: { position?: string; top?: string; left?: string; width?: string; height?: string; zIndex?: string; }, className: string } | null,
-        iframeContainer: { className: string } | null
-    }>({ container: null, iframeContainer: null });
+        container: { style: { position?: string; top?: string; left?: string; width?: string; height?: string; zIndex?: string; }, className: string } | null
+    }>({ container: null });
     const fullscreenContainerRef = useRef<HTMLDivElement>(null);
     const [isOnMobile, setIsOnMobile] = useState(false);
 
@@ -178,14 +177,6 @@ const GameArea: React.FC<GameInfo> = ({
         container.style.height = '100vh';
         container.style.zIndex = '2147483640';
 
-        const iframeDiv = container.querySelector('#iframe-container') as HTMLElement;
-        if (iframeDiv) {
-            originalStylesRef.current.iframeContainer = {
-                className: iframeDiv.className,
-            };
-            // Ensure the iframe container fills the new fixed parent
-            iframeDiv.className = 'w-full h-full';
-        }
         setIsFakeFullscreenActive(true);
     }
 
@@ -215,16 +206,9 @@ const GameArea: React.FC<GameInfo> = ({
             container.className = originalContainerProps.className;
         }
 
-        const iframeDiv = container.querySelector('#iframe-container') as HTMLElement;
-        const originalIframeContainerProps = originalStylesRef.current.iframeContainer;
-        if (iframeDiv && originalIframeContainerProps) {
-            // Restore iframe container className
-            iframeDiv.className = originalIframeContainerProps.className;
-        }
-
         setIsFakeFullscreenActive(false);
         // Reset the stored original styles
-        originalStylesRef.current = { container: null, iframeContainer: null };
+        originalStylesRef.current = { container: null };
 
     };
 
@@ -236,7 +220,7 @@ const GameArea: React.FC<GameInfo> = ({
                 className={`w-full ${isOnMobile ? 'aspect-[9/16]' : 'aspect-video'} rounded-lg relative flex-1 flex justify-center items-center`}>
                 <div id="iframe-container"
                     title={name}
-                    className={`h-full ${portrait ? 'aspect-[9/16]' : 'aspect-video'}`}
+                    className={`${(isOnMobile && !portrait) ? 'w-full' : 'h-full'} ${portrait ? 'aspect-[9/16]' : 'aspect-video'}`}
                 >
                     {isFullscreenActive && (
                         <button
@@ -338,7 +322,7 @@ const GameArea: React.FC<GameInfo> = ({
                         <button ref={fullScreenButtonRef}
                             title='Fullscreen'
                             className="p-2"
-                            onClick={handleFullscreen}>
+                            onClick={fakeFullscreen}>
                             <svg className='text-gray-700 dark:text-gray-100' focusable="false" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
                                 <path
                                     fill='currentColor'
