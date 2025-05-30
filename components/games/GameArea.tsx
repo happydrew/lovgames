@@ -217,7 +217,7 @@ const GameArea: React.FC<GameInfo> = ({
 
             {/* Game Iframe or Play Now */}
             <div ref={fullscreenContainerRef}
-                className={`w-full ${(isOnMobile && (isFullscreenActive || isFakeFullscreenActive)) ? 'aspect-[9/16]' : 'aspect-video'} rounded-lg relative flex-1 flex justify-center items-center`}>
+                className={`w-full ${(isOnMobile && (isFullscreenActive || isFakeFullscreenActive)) ? 'aspect-[9/16]' : 'aspect-video'} rounded-lg relative flex-1 flex justify-center items-center bg-black`}>
                 <div id="iframe-container"
                     title={name}
                     className={`${(isOnMobile && !portrait) ? 'w-full' : 'h-full'} ${portrait ? 'aspect-[9/16]' : 'aspect-video'}`}
