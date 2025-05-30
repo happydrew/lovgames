@@ -117,20 +117,9 @@ const GameArea: React.FC<GameInfo> = ({
 
         if (isMobile()) {
             console.log('is on Mobile');
-            await handleFullscreen(); // This already calls handleFullscreen
-            // const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-            // // Check for iPhone
-            // if (/iPhone/i.test(userAgent)) {
-            //     setShowFullscreenHint(true);
-            // }
+            //await handleFullscreen(); 
+            fakeFullscreen();
         }
-    };
-
-    const handleFullscreenButtonClick = async () => {
-        // if (showFullscreenHint) {
-        //     setShowFullscreenHint(false);
-        // }
-        await handleFullscreen();
     };
 
     const handleFullscreen = async () => {
@@ -177,7 +166,7 @@ const GameArea: React.FC<GameInfo> = ({
         container.style.left = '0px';
         container.style.width = '100vw';
         container.style.height = '100vh';
-        container.style.zIndex = '2147483640'; // Ensure it's below any explicit exit buttons
+        container.style.zIndex = '2147483640';
 
         const iframeDiv = container.querySelector('#iframe-container') as HTMLElement;
         if (iframeDiv) {
