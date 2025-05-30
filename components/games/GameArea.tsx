@@ -132,6 +132,16 @@ const GameArea: React.FC<GameInfo> = ({
             if (screenfull.isEnabled) {
                 await screenfull.request(container);
                 setIsFullscreenActive(true);
+                // 移动端全屏时，锁定屏幕方向
+                if (isMobile() && screen.orientation &&
+                    typeof (screen.orientation as any).lock === 'function') {
+                    try {
+                        await (screen.orientation as any).lock('portrait');
+                        console.log('屏幕已锁定为竖屏');
+                    } catch (err) {
+                        console.warn('竖屏锁定失败:', err);
+                    }
+                }
             } else {
                 throw new Error('Screenfull is not enabled');
             }
