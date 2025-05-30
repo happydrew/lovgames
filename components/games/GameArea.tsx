@@ -1,6 +1,7 @@
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { Star, Fullscreen, VolumeX, Volume2, Minimize2 } from 'lucide-react';
+import React, { useEffect, useRef, useState, useCallback, use } from 'react';
+import { Star, Minimize2 } from 'lucide-react';
 import { GameInfo } from '@lib/types';
+import screenfull from 'screenfull';
 
 const GameArea: React.FC<GameInfo> = ({
     name,
@@ -17,7 +18,13 @@ const GameArea: React.FC<GameInfo> = ({
     const [showFullscreenHint, setShowFullscreenHint] = useState(false);
     const fullScreenButtonRef = useRef<HTMLButtonElement>(null);
     const [isFullscreenActive, setIsFullscreenActive] = useState(false);
+    const [isFakeFullscreenActive, setIsFakeFullscreenActive] = useState(false);
+    const originalStylesRef = useRef<{
+        container: { style: { position?: string; top?: string; left?: string; width?: string; height?: string; zIndex?: string; }, className: string } | null,
+        iframeContainer: { className: string } | null
+    }>({ container: null, iframeContainer: null });
     const fullscreenContainerRef = useRef<HTMLDivElement>(null);
+    const [isOnMobile, setIsOnMobile] = useState(false);
 
     function isMobile(): boolean {
         if (typeof window === 'undefined') return false;
@@ -27,6 +34,10 @@ const GameArea: React.FC<GameInfo> = ({
         );
         return matchMediaCheck || userAgentCheck;
     }
+
+    useEffect(() => {
+        setIsOnMobile(isMobile());
+    }, []);
 
     useEffect(() => {
         let timer: NodeJS.Timeout;
@@ -42,49 +53,49 @@ const GameArea: React.FC<GameInfo> = ({
         };
     }, [showFullscreenHint]);
 
-    useEffect(() => {
-        const onFsChange = async () => {
-            const isFs = !!(document.fullscreenElement || (document as any).webkitFullscreenElement || (document as any).mozFullScreenElement || (document as any).msFullscreenElement);
-            console.log('fullscreenchange event detected, isFullscreen:', isFs);
-            console.log(`Current fullscreen element:`, document.fullscreenElement || (document as any).webkitFullscreenElement || (document as any).mozFullScreenElement || (document as any).msFullscreenElement);
-            setIsFullscreenActive(isFs);
+    // useEffect(() => {
+    //     const onFsChange = async () => {
+    //         const isFs = !!(document.fullscreenElement || (document as any).webkitFullscreenElement || (document as any).mozFullScreenElement || (document as any).msFullscreenElement);
+    //         console.log('fullscreenchange event detected, isFullscreen:', isFs);
+    //         console.log(`Current fullscreen element:`, document.fullscreenElement || (document as any).webkitFullscreenElement || (document as any).mozFullScreenElement || (document as any).msFullscreenElement);
+    //         setIsFullscreenActive(isFs);
 
-            if (isFs && isMobile()) {
-                if (screen.orientation &&
-                    typeof (screen.orientation as any).lock === 'function') {
-                    try {
-                        await (screen.orientation as any).lock('portrait');
-                        console.log('屏幕已锁定为竖屏');
-                    } catch (err) {
-                        console.warn('竖屏锁定失败:', err);
-                    }
-                } else {
-                    console.warn('屏幕方向API screen.orientation.lock 不可用或不存在');
-                }
-            } else if (!isFs && isMobile()) { // Exited fullscreen on mobile
-                if (screen.orientation && typeof screen.orientation.unlock === 'function') {
-                    try {
-                        screen.orientation.unlock();
-                        console.log('屏幕方向已解锁');
-                    } catch (err) {
-                        console.warn('屏幕方向解锁失败:', err);
-                    }
-                }
-            }
-        };
+    //         if (isFs && isMobile()) {
+    //             if (screen.orientation &&
+    //                 typeof (screen.orientation as any).lock === 'function') {
+    //                 try {
+    //                     await (screen.orientation as any).lock('portrait');
+    //                     console.log('屏幕已锁定为竖屏');
+    //                 } catch (err) {
+    //                     console.warn('竖屏锁定失败:', err);
+    //                 }
+    //             } else {
+    //                 console.warn('屏幕方向API screen.orientation.lock 不可用或不存在');
+    //             }
+    //         } else if (!isFs && isMobile()) { // Exited fullscreen on mobile
+    //             if (screen.orientation && typeof screen.orientation.unlock === 'function') {
+    //                 try {
+    //                     screen.orientation.unlock();
+    //                     console.log('屏幕方向已解锁');
+    //                 } catch (err) {
+    //                     console.warn('屏幕方向解锁失败:', err);
+    //                 }
+    //             }
+    //         }
+    //     };
 
-        document.addEventListener('fullscreenchange', onFsChange);
-        document.addEventListener('webkitfullscreenchange', onFsChange); // Safari, Chrome (older), Opera
-        document.addEventListener('mozfullscreenchange', onFsChange);    // Firefox
-        document.addEventListener('MSFullscreenChange', onFsChange);     // IE11 / Edge
+    //     document.addEventListener('fullscreenchange', onFsChange);
+    //     document.addEventListener('webkitfullscreenchange', onFsChange); // Safari, Chrome (older), Opera
+    //     document.addEventListener('mozfullscreenchange', onFsChange);    // Firefox
+    //     document.addEventListener('MSFullscreenChange', onFsChange);     // IE11 / Edge
 
-        return () => {
-            document.removeEventListener('fullscreenchange', onFsChange);
-            document.removeEventListener('webkitfullscreenchange', onFsChange);
-            document.removeEventListener('mozfullscreenchange', onFsChange);
-            document.removeEventListener('MSFullscreenChange', onFsChange);
-        };
-    }, []); // isMobile function is stable, so [] is okay.
+    //     return () => {
+    //         document.removeEventListener('fullscreenchange', onFsChange);
+    //         document.removeEventListener('webkitfullscreenchange', onFsChange);
+    //         document.removeEventListener('mozfullscreenchange', onFsChange);
+    //         document.removeEventListener('MSFullscreenChange', onFsChange);
+    //     };
+    // }, []); // isMobile function is stable, so [] is okay.
 
     const toggleMute = () => {
         setIsMuted(!isMuted);
@@ -101,93 +112,137 @@ const GameArea: React.FC<GameInfo> = ({
         }
     };
 
-    const startGame = () => {
+    const startGame = async () => {
         setGameStarted(true);
 
         if (isMobile()) {
             console.log('is on Mobile');
-            handleFullscreenButtonClick(); // This already calls handleFullscreen
-            const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
-            // Check for iPhone
-            if (/iPhone/i.test(userAgent)) {
-                setShowFullscreenHint(true);
-            }
+            await handleFullscreen(); // This already calls handleFullscreen
+            // const userAgent = navigator.userAgent || navigator.vendor || (window as any).opera;
+            // // Check for iPhone
+            // if (/iPhone/i.test(userAgent)) {
+            //     setShowFullscreenHint(true);
+            // }
         }
     };
 
     const handleFullscreenButtonClick = async () => {
-        if (showFullscreenHint) {
-            setShowFullscreenHint(false);
-        }
+        // if (showFullscreenHint) {
+        //     setShowFullscreenHint(false);
+        // }
         await handleFullscreen();
     };
 
     const handleFullscreen = async () => {
         const container = fullscreenContainerRef.current;
-        const doc = document as any; // To handle vendor prefixed elements/methods
-
-        const isCurrentlyFullscreen = doc.fullscreenElement || doc.webkitFullscreenElement || doc.mozFullScreenElement || doc.msFullscreenElement;
-
-        if (isCurrentlyFullscreen) {
-            try {
-                if (doc.exitFullscreen) {
-                    await doc.exitFullscreen();
-                } else if (doc.webkitExitFullscreen) { // Safari, Chrome, Opera
-                    await doc.webkitExitFullscreen();
-                } else if (doc.mozCancelFullScreen) { // Firefox
-                    await doc.mozCancelFullScreen();
-                } else if (doc.msExitFullscreen) { // IE11 / Edge
-                    await doc.msExitFullscreen();
-                }
-                console.log('Exited fullscreen');
-            } catch (err) {
-                console.error('Error exiting fullscreen:', err);
-            }
-        } else if (container) {
-            try {
-                if (container.requestFullscreen) {
-                    await container.requestFullscreen();
-                } else if ((container as any).webkitRequestFullscreen) { // Safari, Chrome, Opera
-                    await (container as any).webkitRequestFullscreen();
-                } else if ((container as any).mozRequestFullScreen) { // Firefox
-                    await (container as any).mozRequestFullScreen();
-                } else if ((container as any).msRequestFullscreen) { // IE11 / Edge
-                    await (container as any).msRequestFullscreen();
-                } else {
-                    console.warn('Fullscreen API is not supported by this browser.');
-                    if (isMobile()) {
-                        alert('Your browser does not support fullscreen mode.');
-                    }
-                    return; // Exit if not supported
-                }
-                console.log('Requested fullscreen');
-            } catch (err) {
-                console.error('Error requesting fullscreen:', err);
-                if (isMobile() && /iPhone|iPad|iPod/i.test(navigator.userAgent)) {
-                    alert('Fullscreen mode is not supported on safari browser.');
-                } else if (isMobile()) {
-                    console.log('Fullscreen mode is not supported, please try again later.');
-                }
-            }
-        } else {
-            console.warn('Fullscreen container not found.');
+        if (!container) {
+            console.error('Container not found');
+            return;
         }
+        try {
+            if (screenfull.isEnabled) {
+                await screenfull.request(container);
+                setIsFullscreenActive(true);
+            } else {
+                throw new Error('Screenfull is not enabled');
+            }
+        } catch (error) {
+            console.error('Failed to enter fullscreen (activating fake fullscreen):', error);
+            fakeFullscreen();
+        }
+    };
+
+    const fakeFullscreen = () => {
+        // Implement fake fullscreen
+        const container = fullscreenContainerRef.current;
+        if (!container) {
+            console.error('Container not found');
+            return;
+        }
+        const currentContainerStyle = container.style;
+        originalStylesRef.current.container = {
+            style: {
+                position: currentContainerStyle.position,
+                top: currentContainerStyle.top,
+                left: currentContainerStyle.left,
+                width: currentContainerStyle.width,
+                height: currentContainerStyle.height,
+                zIndex: currentContainerStyle.zIndex,
+            },
+            className: container.className,
+        };
+
+        container.style.position = 'fixed';
+        container.style.top = '0px';
+        container.style.left = '0px';
+        container.style.width = '100vw';
+        container.style.height = '100vh';
+        container.style.zIndex = '2147483640'; // Ensure it's below any explicit exit buttons
+
+        const iframeDiv = container.querySelector('#iframe-container') as HTMLElement;
+        if (iframeDiv) {
+            originalStylesRef.current.iframeContainer = {
+                className: iframeDiv.className,
+            };
+            // Ensure the iframe container fills the new fixed parent
+            iframeDiv.className = 'w-full h-full';
+        }
+        setIsFakeFullscreenActive(true);
+    }
+
+    const exitFullscreen = async () => {
+        if (isFullscreenActive) {
+            await screenfull.exit();
+            setIsFullscreenActive(false);
+        } else if (isFakeFullscreenActive) {
+            exitFakeFullscreen();
+        }
+    };
+
+    const exitFakeFullscreen = async () => {
+        const container = fullscreenContainerRef.current;
+        const originalContainerProps = originalStylesRef.current.container;
+
+        if (originalContainerProps) {
+            // Restore container styles
+            const styleToRestore = originalContainerProps.style;
+            container.style.position = styleToRestore.position || '';
+            container.style.top = styleToRestore.top || '';
+            container.style.left = styleToRestore.left || '';
+            container.style.width = styleToRestore.width || '';
+            container.style.height = styleToRestore.height || '';
+            container.style.zIndex = styleToRestore.zIndex || '';
+            // Restore container className
+            container.className = originalContainerProps.className;
+        }
+
+        const iframeDiv = container.querySelector('#iframe-container') as HTMLElement;
+        const originalIframeContainerProps = originalStylesRef.current.iframeContainer;
+        if (iframeDiv && originalIframeContainerProps) {
+            // Restore iframe container className
+            iframeDiv.className = originalIframeContainerProps.className;
+        }
+
+        setIsFakeFullscreenActive(false);
+        // Reset the stored original styles
+        originalStylesRef.current = { container: null, iframeContainer: null };
+
     };
 
     return (
         <div className="flex-1 w-full flex flex-col justify-center items-center bg-[#212233] rounded-lg">
 
             {/* Game Iframe or Play Now */}
-            <div className="w-full aspect-video rounded-lg relative flex-1 flex justify-center items-center">
+            <div ref={fullscreenContainerRef}
+                className={`w-full ${isOnMobile ? 'aspect-[9/16]' : 'aspect-video'} rounded-lg relative flex-1 flex justify-center items-center`}>
                 <div id="iframe-container"
-                    ref={fullscreenContainerRef}
                     title={name}
                     className={`h-full ${portrait ? 'aspect-[9/16]' : 'aspect-video'}`}
                 >
                     {isFullscreenActive && (
                         <button
                             title="退出全屏"
-                            onClick={handleFullscreen}
+                            onClick={exitFullscreen}
                             className="fixed top-1 right-1 p-2 bg-gray-900 bg-opacity-40 hover:bg-opacity-80 text-gray-200 rounded-full z-[2147483647] transition-opacity duration-200"
                             style={{ WebkitTapHighlightColor: 'transparent' }}
                         >
@@ -284,7 +339,7 @@ const GameArea: React.FC<GameInfo> = ({
                         <button ref={fullScreenButtonRef}
                             title='Fullscreen'
                             className="p-2"
-                            onClick={handleFullscreenButtonClick}>
+                            onClick={handleFullscreen}>
                             <svg className='text-gray-700 dark:text-gray-100' focusable="false" aria-hidden="true" viewBox="0 0 24 24" width="24" height="24">
                                 <path
                                     fill='currentColor'
