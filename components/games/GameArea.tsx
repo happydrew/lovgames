@@ -132,7 +132,7 @@ const GameArea: React.FC<GameInfo> = ({
                 await screenfull.request(container);
                 setIsFullscreenActive(true);
                 // 移动端全屏时，锁定屏幕方向
-                if (isMobile() && screen.orientation &&
+                if (portrait && isMobile() && screen.orientation &&
                     typeof (screen.orientation as any).lock === 'function') {
                     try {
                         await (screen.orientation as any).lock('portrait');
