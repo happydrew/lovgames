@@ -91,13 +91,17 @@ iframe:-moz-full-screen {
 
 /* In your global CSS file */
 @keyframes horizontal-shuttle {
-  0%, 100% {
+
+  0%,
+  100% {
     /* The element is already positioned by Tailwind's right-full and transform -translate-y-1/2.
        We only add a small horizontal offset for the shuttle animation. */
     transform: translateY(-50%) translateX(0px);
   }
+
   50% {
-    transform: translateY(-50%) translateX(8px); /* Shuttle left by 8px */
+    transform: translateY(-50%) translateX(8px);
+    /* Shuttle left by 8px */
   }
 }
 
@@ -105,4 +109,47 @@ iframe:-moz-full-screen {
   /* Tailwind classes like 'absolute top-1/2 right-full transform -translate-y-1/2' handle initial positioning.
      This animation class adds the shuttle movement. */
   animation: horizontal-shuttle 1.5s ease-in-out infinite;
+}
+
+
+@keyframes glow {
+
+  0%,
+  100% {
+    box-shadow:
+      0 0 8px rgba(129, 140, 248, 0.7),
+      0 0 15px rgba(167, 139, 250, 0.6),
+      0 0 20px rgba(244, 114, 182, 0.5);
+  }
+
+  50% {
+    box-shadow:
+      0 0 15px rgba(129, 140, 248, 0.9),
+      0 0 30px rgba(167, 139, 250, 0.8),
+      0 0 40px rgba(244, 114, 182, 0.7);
+  }
+}
+
+.animate-glow {
+  animation: glow 2s infinite ease-in-out;
+}
+
+@keyframes slow-shake {
+
+  0%,
+  100% {
+    transform: translateX(0) rotate(0);
+  }
+
+  25% {
+    transform: translateX(-2px) rotate(-0.5deg);
+  }
+
+  75% {
+    transform: translateX(2px) rotate(0.5deg);
+  }
+}
+
+.animate-slow-shake {
+  animation: slow-shake 5s infinite ease-in-out;
 }

@@ -281,7 +281,7 @@ const GameArea: React.FC<GameInfo> = ({
 
                     {/* 内容层 */}
                     <div className="z-10 flex flex-col items-center">
-                        <div className="mb-2 md:mb-4">
+                        <div className="mb-1 md:mb-2">
                             <img
                                 src={image}
                                 alt={name}
@@ -293,7 +293,7 @@ const GameArea: React.FC<GameInfo> = ({
                         </div>
                         <div className="text-lg md:text-3xl font-header m-1 md:m-4 text-white text-center">{name}</div>
                         <button
-                            className="bg-indigo-600 hover:bg-indigo-700 text-sm md:text-xl text-white font-bold py-1.5 md:py-3 px-4 md:px-10 rounded-full flex items-center shadow-lg"
+                            className="bg-indigo-600 hover:bg-indigo-700 text-sm md:text-xl text-white font-bold py-1.5 md:py-3 px-4 md:px-10  mb-2 rounded-full flex items-center shadow-lg animate-glow"
                             onClick={startGame}
                         >
                             Play Now
