@@ -147,21 +147,18 @@ const GameArea: React.FC<GameInfo> = ({
     }
 
     const exitFullscreen = async () => {
-        if (isFullscreenActive) {
-            try {
-                await screenfull.exit();
-                if (screen.orientation &&
-                    typeof (screen.orientation as any).unlock === 'function') {
-                    await (screen.orientation as any).unlock();
-                }
-            } finally {
-                setIsFullscreenActive(false);
+        console.log('execute exitFullscreen, isFullscreenActive');
+        try {
+            await screenfull.exit();
+            if (screen.orientation &&
+                typeof (screen.orientation as any).unlock === 'function') {
+                await (screen.orientation as any).unlock();
             }
+        } finally {
+            setIsFullscreenActive(false);
         }
-        if (isFakeFullscreenActive) {
-            exitFakeFullscreen();
-        }
-    };
+        exitFakeFullscreen();
+    }
 
     const exitFakeFullscreen = async () => {
         setIsFakeFullscreenActive(false);
