@@ -165,10 +165,13 @@ const GameArea: React.FC<GameInfo> = ({
     };
 
     useEffect(() => {
+        const container = fullscreenContainerRef.current;
+        if (!container) {
+            return;
+        }
+
         // Implement fake fullscreen
         if (isFakeFullscreenActive) {
-            const container = fullscreenContainerRef.current;
-
             originalContainerStyleRef.current = {
                 position: container.style.position,
                 top: container.style.top,
@@ -180,22 +183,25 @@ const GameArea: React.FC<GameInfo> = ({
             };
 
             container.style.position = 'fixed';
-            container.style.top = '0px';
-            container.style.left = '0px';
             container.style.zIndex = '2147483640';
             const vw = window.visualViewport?.width || window.innerWidth;
             const vh = window.visualViewport?.height || window.innerHeight;
-            if (isOnMobile && !portrait) {
+
+            if (isOnMobile && !portrait) { // Mobile in landscape orientation
+                container.style.width = `${vh}px`; // Container width is viewport height
+                container.style.height = `${vw}px`; // Container height is viewport width
+                // Adjust top and left to correctly position the rotated container
+                container.style.top = `${(vh - vw) / 2}px`;
+                container.style.left = `${(vw - vh) / 2}px`;
                 container.style.transform = 'rotate(90deg)';
-                container.style.width = `${vh}px`;
-                container.style.height = `${vw}px`;
-            } else {
+            } else { // Mobile in portrait, or PC (any orientation)
                 container.style.width = `${vw}px`;
                 container.style.height = `${vh}px`;
+                container.style.transform = 'none'; // No rotation needed
+                container.style.top = '0px'; // Standard top-left alignment
+                container.style.left = '0px';
             }
         } else {
-            const container = fullscreenContainerRef.current;
-
             container.style.position = originalContainerStyleRef.current.position || '';
             container.style.top = originalContainerStyleRef.current.top || '';
             container.style.left = originalContainerStyleRef.current.left || '';
@@ -204,7 +210,7 @@ const GameArea: React.FC<GameInfo> = ({
             container.style.zIndex = originalContainerStyleRef.current.zIndex || '';
             container.style.transform = originalContainerStyleRef.current.transform || '';
         }
-    }, [isFakeFullscreenActive]);
+    }, [isFakeFullscreenActive, isOnMobile, portrait]);
 
     useEffect(() => {
         const handleFullscreenChange = () => {
