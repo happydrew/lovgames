@@ -19,10 +19,16 @@ const GameArea: React.FC<GameInfo> = ({
     const fullScreenButtonRef = useRef<HTMLButtonElement>(null);
     const [isFullscreenActive, setIsFullscreenActive] = useState(false);
     const [isFakeFullscreenActive, setIsFakeFullscreenActive] = useState(false);
-    // const originalStylesRef = useRef<{
-    //     container: { style: { position?: string; top?: string; left?: string; width?: string; height?: string; zIndex?: string; }, className: string } | null
-    // }>({ container: null });
     const fullscreenContainerRef = useRef<HTMLDivElement>(null);
+    const originalContainerStyleRef = useRef<{
+        position?: string;
+        top?: string;
+        left?: string;
+        width?: string;
+        height?: string;
+        zIndex?: string;
+        transform?: string;
+    }>({});
     const iframeContainerRef = useRef<HTMLDivElement>(null);
     const [isOnMobile, setIsOnMobile] = useState(false);
 
@@ -97,21 +103,6 @@ const GameArea: React.FC<GameInfo> = ({
     //     };
     // }, []); // isMobile function is stable, so [] is okay.
 
-    const toggleMute = () => {
-        setIsMuted(!isMuted);
-        if (gameIframeRef.current) {
-            if (!isMuted) {
-                gameIframeRef.current.querySelectorAll('video, audio').forEach(el => {
-                    (el as HTMLMediaElement).muted = true;
-                });
-            } else {
-                gameIframeRef.current.querySelectorAll('video, audio').forEach(el => {
-                    (el as HTMLMediaElement).muted = false;
-                });
-            }
-        }
-    };
-
     const startGame = async () => {
         setGameStarted(true);
 
@@ -152,32 +143,6 @@ const GameArea: React.FC<GameInfo> = ({
     };
 
     const fakeFullscreen = () => {
-        // // Implement fake fullscreen
-        // const container = fullscreenContainerRef.current;
-        // if (!container) {
-        //     console.error('Container not found');
-        //     return;
-        // }
-        // const currentContainerStyle = container.style;
-        // originalStylesRef.current.container = {
-        //     style: {
-        //         position: currentContainerStyle.position,
-        //         top: currentContainerStyle.top,
-        //         left: currentContainerStyle.left,
-        //         width: currentContainerStyle.width,
-        //         height: currentContainerStyle.height,
-        //         zIndex: currentContainerStyle.zIndex,
-        //     },
-        //     className: container.className,
-        // };
-
-        // container.style.position = 'fixed';
-        // container.style.top = '0px';
-        // container.style.left = '0px';
-        // container.style.width = '100vw';
-        // container.style.height = '100vh';
-        // container.style.zIndex = '2147483640';
-
         setIsFakeFullscreenActive(true);
     }
 
@@ -192,40 +157,80 @@ const GameArea: React.FC<GameInfo> = ({
             } finally {
                 setIsFullscreenActive(false);
             }
-        } else if (isFakeFullscreenActive) {
+        }
+        if (isFakeFullscreenActive) {
             exitFakeFullscreen();
         }
     };
 
     const exitFakeFullscreen = async () => {
-        // const container = fullscreenContainerRef.current;
-        // const originalContainerProps = originalStylesRef.current.container;
-
-        // if (originalContainerProps) {
-        //     // Restore container styles
-        //     const styleToRestore = originalContainerProps.style;
-        //     container.style.position = styleToRestore.position || '';
-        //     container.style.top = styleToRestore.top || '';
-        //     container.style.left = styleToRestore.left || '';
-        //     container.style.width = styleToRestore.width || '';
-        //     container.style.height = styleToRestore.height || '';
-        //     container.style.zIndex = styleToRestore.zIndex || '';
-        //     // Restore container className
-        //     container.className = originalContainerProps.className;
-        // }
-
-        // // Reset the stored original styles
-        // originalStylesRef.current = { container: null };
-
         setIsFakeFullscreenActive(false);
     };
+
+    useEffect(() => {
+        // Implement fake fullscreen
+        if (isFakeFullscreenActive) {
+            const container = fullscreenContainerRef.current;
+
+            originalContainerStyleRef.current = {
+                position: container.style.position,
+                top: container.style.top,
+                left: container.style.left,
+                width: container.style.width,
+                height: container.style.height,
+                zIndex: container.style.zIndex,
+                transform: container.style.transform,
+            };
+
+            container.style.position = 'fixed';
+            container.style.top = '0px';
+            container.style.left = '0px';
+            container.style.zIndex = '2147483640';
+            if (isOnMobile && !portrait) {
+                container.style.transform = 'rotate(90deg)';
+                container.style.width = '100vh';
+                container.style.height = '100vw';
+            } else {
+                container.style.width = '100vw';
+                container.style.height = '100vh';
+            }
+        } else {
+            const container = fullscreenContainerRef.current;
+
+            container.style.position = originalContainerStyleRef.current.position || '';
+            container.style.top = originalContainerStyleRef.current.top || '';
+            container.style.left = originalContainerStyleRef.current.left || '';
+            container.style.width = originalContainerStyleRef.current.width || '';
+            container.style.height = originalContainerStyleRef.current.height || '';
+            container.style.zIndex = originalContainerStyleRef.current.zIndex || '';
+            container.style.transform = originalContainerStyleRef.current.transform || '';
+        }
+    }, [isFakeFullscreenActive]);
+
+    useEffect(() => {
+        const handleFullscreenChange = () => {
+            console.log('fullscreenchange event detected');
+            const isFullscreen = !!document.fullscreenElement;
+            console.log('isFullscreen', isFullscreen);
+            if (!isFullscreen) {
+                console.log('Fullscreen was exited (possibly via ESC)');
+                exitFullscreen();
+            }
+        };
+
+        document.addEventListener('fullscreenchange', handleFullscreenChange);
+
+        return () => {
+            document.removeEventListener('fullscreenchange', handleFullscreenChange);
+        };
+    }, []);
 
     return (
         <div className="flex-1 w-full flex flex-col justify-center items-center bg-[#212233] rounded-lg">
 
             {/* Game Iframe or Play Now */}
             <div ref={fullscreenContainerRef}
-                className={`${(isFullscreenActive || isFakeFullscreenActive) ? `${isOnMobile && !portrait ? 'rotate-90' : ''} !fixed top-0 left-0 w-[100vw] h-[100vh] z-[2147483647]` : 'w-full aspect-video'} rounded-lg relative flex-1 flex justify-center items-center bg-black`}
+                className='w-full aspect-video rounded-lg relative flex-1 flex justify-center items-center bg-black'
             >
                 <div id="iframe-container"
                     ref={iframeContainerRef}
@@ -234,7 +239,7 @@ const GameArea: React.FC<GameInfo> = ({
                 >
                     {(isFullscreenActive || isFakeFullscreenActive) && (
                         <button
-                            title="退出全屏"
+                            title="exit fullscreen"
                             onClick={exitFullscreen}
                             className="fixed top-1 right-1 p-2 bg-gray-900 bg-opacity-40 hover:bg-opacity-80 text-gray-200 rounded-full z-[2147483647] transition-opacity duration-200"
                             style={{ WebkitTapHighlightColor: 'transparent' }}
