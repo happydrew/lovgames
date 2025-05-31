@@ -271,7 +271,22 @@ export default {
       layout: 'raw'
     }
   },
-
+  "zombie-tide-wartruck": {
+    type: 'page',
+    title: 'Zombie Tide Wartruck',
+    display: 'hidden',
+    theme: {
+      layout: 'raw'
+    }
+  },
+  "nightmare-simulator": {
+    type: 'page',
+    title: 'Nightmare Simulator',
+    display: 'hidden',
+    theme: {
+      layout: 'raw'
+    }
+  },
   // docs: {
   //   type: 'page',
   //   title: 'Documentation'

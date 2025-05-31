@@ -52,9 +52,14 @@ const HomePage: React.FC = () => {
             "image": "/assets/images/games/cat-shot-rogou.webp"
         },
         {
-            "name": "Weapon Web",
-            "href": "/weapon-web",
-            "image": "/assets/images/games/weapon-web.webp"
+            "name": "Zombie Tide Wartruck",
+            "href": "/zombie-tide-wartruck",
+            "image": "/assets/images/games/zombie-tide-wartruck.webp"
+        },
+        {
+            "name": "Nightmare Simulator",
+            "href": "/nightmare-simulator",
+            "image": "/assets/images/games/nightmare-simulator.webp"
         }
     ];
     const newGames: Game[] = [
@@ -67,6 +72,21 @@ const HomePage: React.FC = () => {
             "name": "Rush Riders",
             "href": "/rush-riders",
             "image": "/assets/images/games/rush-riders.webp"
+        },
+        {
+            "name": "Cat Shot Rogou",
+            "href": "/cat-shot-rogou",
+            "image": "/assets/images/games/cat-shot-rogou.webp"
+        },
+        {
+            "name": "Zombie Tide Wartruck",
+            "href": "/zombie-tide-wartruck",
+            "image": "/assets/images/games/zombie-tide-wartruck.webp"
+        },
+        {
+            "name": "Nightmare Simulator",
+            "href": "/nightmare-simulator",
+            "image": "/assets/images/games/nightmare-simulator.webp"
         },
         {
             "name": "Weapon Web",
