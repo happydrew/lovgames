@@ -186,13 +186,15 @@ const GameArea: React.FC<GameInfo> = ({
             container.style.top = '0px';
             container.style.left = '0px';
             container.style.zIndex = '2147483640';
+            const vw = window.visualViewport?.width || window.innerWidth;
+            const vh = window.visualViewport?.height || window.innerHeight;
             if (isOnMobile && !portrait) {
                 container.style.transform = 'rotate(90deg)';
-                container.style.width = '100vh';
-                container.style.height = '100vw';
+                container.style.width = `${vh}px`;
+                container.style.height = `${vw}px`;
             } else {
-                container.style.width = '100vw';
-                container.style.height = '100vh';
+                container.style.width = `${vw}px`;
+                container.style.height = `${vh}px`;
             }
         } else {
             const container = fullscreenContainerRef.current;
