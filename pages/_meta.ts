@@ -298,6 +298,23 @@ export default {
       layout: 'raw'
     }
   },
+  "privacy-policy": {
+    type: 'page',
+    title: 'Privacy',
+    display: 'hidden',
+    theme: {
+      layout: 'raw'
+    }
+  },
+  "terms-of-service": {
+    type: 'page',
+    title: 'Terms',
+    display: 'hidden',
+    theme: {
+      layout: 'raw'
+    }
+  },
+
   404: {
     type: 'page',
     theme: {

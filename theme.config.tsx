@@ -73,7 +73,8 @@ function Footer() {
           title="About"
           items={[
             { title: "Concat", url: "/concat" },
-            // { title: "Privacy Policy", url: "https://autoformai.floxai.top/docs/privacy-policy/" },
+            { title: "Privacy Policy", url: "/privacy-policy" },
+            { title: "Terms of service", url: "/privacy-policy" },
           ]}
         />
       </div>

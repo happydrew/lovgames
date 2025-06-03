@@ -63,7 +63,10 @@ export default function App({ Component, pageProps }: AppProps): ReactElement {
       </Head>
 
       {/* Google Adsense script */}
-      {/* <Script strategy='lazyOnload' async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4907197973761221" crossOrigin="anonymous"></Script> */}
+      <Script async
+        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4907197973761221"
+        crossOrigin="anonymous">
+      </Script>
 
       {/* monetag */}
       {/* <Script>
